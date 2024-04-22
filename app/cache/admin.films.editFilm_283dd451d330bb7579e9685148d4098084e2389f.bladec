@@ -1,0 +1,37 @@
+<div class="page-wrapper">
+ <div class="container-fluid">
+ <form action="" method="post" class="rounded shadow-lg  g-3 p-5 mx-auto my-5" style="width: 800px;" enctype="multipart/form-data">
+ <label for="" class="form-label ">Film Name</label>
+ <input type="text" name="name" class="form-control" placeholder="Film name" value="<?php echo \htmlentities($film['name']??'', ENT_QUOTES, 'UTF-8', false); ?>">
+ <?php if(!empty($error['name'])): ?>
+ <p class="mx-1 my-1" style="color: red;"><?php echo \htmlentities($error['name']??'', ENT_QUOTES, 'UTF-8', false); ?></p>
+ <?php endif; ?>
+ <br><br>
+ <label for="" class="form-label ">Rel Date</label>
+ <input type="date" name="relDate" class="form-control" disabled value="<?php echo \htmlentities($film['rel_date']??'', ENT_QUOTES, 'UTF-8', false); ?>">
+ <br><br>
+ <label for="" class="form-label ">Genre</label>
+ <select name="genre" class="form-select">
+ <option value="0">---Lựa Chọn---</option>
+ <?php $__currentLoopData = $genre; $this->addLoop($__currentLoopData);$this->getFirstLoop();
+ foreach($__currentLoopData as $value): $loop = $this->incrementLoopIndices();  ?>
+ <option value="<?php echo \htmlentities($value['id']??'', ENT_QUOTES, 'UTF-8', false); ?>" <?php if ($value['id'] == $film['id_genre']) echo 'selected' ?>><?php echo \htmlentities($value['name']??'', ENT_QUOTES, 'UTF-8', false); ?></option>
+ <?php endforeach; $this->popLoop(); $loop = $this->getFirstLoop(); ?>
+ </select>
+ <?php if(!empty($error['genre'])): ?>
+ <p class="mx-1 my-1" style="color: red;"><?php echo \htmlentities($error['genre']??'', ENT_QUOTES, 'UTF-8', false); ?></p>
+ <?php endif; ?>
+ <br><br>
+ <label for="" class="form-label ">Image</label>
+ <input type="file" name="image" class="form-control">
+ <?php if(!empty($error['image'])): ?>
+ <p class="mx-1 my-1" style="color: red;"><?php echo \htmlentities($error['image']??'', ENT_QUOTES, 'UTF-8', false); ?></p>
+ <?php endif; ?>
+ <br><br>
+ <input type="hidden" name="id" value="<?php echo \htmlentities($film['id']??'', ENT_QUOTES, 'UTF-8', false); ?>">
+ <input type="submit" value="Update Film" name="btnSubmit" class="btn btn-primary">
+ <a href="/Personal_Project/home" class="btn btn-primary ">List Film</a>
+ </form>
+ </div>
+</div>
+<?=include "app/views/admin/footer.blade.php";?>

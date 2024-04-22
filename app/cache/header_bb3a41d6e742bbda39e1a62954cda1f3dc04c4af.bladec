@@ -1,0 +1,197 @@
+<?php
+if (isset($_SESSION['auth'])) {
+ $list_genre = loadall_genre();
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+
+<!-- Mirrored from pixner.net/boleto/demo/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 10 Nov 2023 08:54:32 GMT -->
+
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+ <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+ <link rel="stylesheet" href="assets/css/all.min.css">
+ <link rel="stylesheet" href="assets/css/animate.css">
+ <link rel="stylesheet" href="assets/css/flaticon.css">
+ <link rel="stylesheet" href="assets/css/magnific-popup.css">
+ <link rel="stylesheet" href="assets/css/odometer.css">
+ <link rel="stylesheet" href="assets/css/owl.carousel.min.css">
+ <link rel="stylesheet" href="assets/css/owl.theme.default.min.css">
+ <link rel="stylesheet" href="assets/css/nice-select.css">
+ <link rel="stylesheet" href="assets/css/jquery.animatedheadline.css">
+ <link rel="stylesheet" href="assets/css/main.css">
+
+ <link rel="shortcut icon" href="assets/images/favicon.png" type="image/x-icon">
+
+ <title>FPOLY Cinema - Đặt vé xem phim</title>
+
+ <style>
+ .nice-select .list {
+ background-color: #fff !important;
+ }
+
+ .ticket-search-form .form-group button {
+ right: 20px
+ }
+
+ .ticket-search-form .form-group input {
+ padding: 0 20px;
+ }
+
+ .ticket-search-form .form-group.large {
+ width: 340px;
+ justify-content: space-between;
+ }
+
+ .banner-section {
+ padding: 170px 316px 170px;
+ position: relative;
+ }
+
+ .movie-grid {
+ height: 562px;
+ }
+
+ .widget-search .btn_search {
+ width: auto;
+ min-width: 150px;
+ outline: none;
+ color: #ffffff;
+ height: 40px;
+ border-radius: 20px;
+ background-image: -webkit-linear-gradient(169deg, #5560ff 17%, #aa52a1 63%, #ff4343 100%);
+ }
+
+ .flaticon-loupe {
+ position: absolute;
+ left: 64px;
+ line-height: 40px;
+ }
+
+ .error {
+ color: red;
+ margin: 10px 0 0 0;
+ }
+
+ table {}
+
+ th {
+ border-bottom: 3px solid #fff;
+ }
+
+ td {
+ border-bottom: 1px solid #fff;
+ }
+
+ td,
+ th {
+ padding: 20px;
+ }
+
+ .contact-info .info-area {
+ background: none;
+ }
+ </style>
+
+</head>
+
+<body>
+ <!-- ==========Preloader==========-->
+ <!-- <div class="preloader">
+ <div class="preloader-inner">
+ <div class="preloader-icon">
+ <span></span>
+ <span></span>
+ </div>
+ </div>
+</div> -->
+ <!-- ==========Preloader==========-->
+ <!-- ==========Overlay==========-->
+ <div class="overlay"></div>
+ <a href="#0" class="scrollToTop">
+ <i class="fas fa-angle-up"></i>
+ </a>
+ <!-- ==========Overlay========== -->
+
+ <!-- ==========Header-Section========== -->
+ <header class="header-section">
+ <div class="container">
+ <div class="header-wrapper">
+ <div class="logo">
+ <a href="index.php?act=home">
+ <h5>FPOLY Cinema</h5>
+ </a>
+ </div>
+ <?php if(isset($_SESSION['account'])): ?>
+ <ul class="menu">
+ <li>
+ <a href="index.php?act=home" class="active">Trang Chủ</a>
+ </li>
+ <li>
+ <a href="index.php?act=movie">Phim</a>
+ <ul class="submenu">
+ <?php if(isset($list_genre)): ?>
+ <?php $__currentLoopData = $list_genre; $this->addLoop($__currentLoopData);$this->getFirstLoop();
+ foreach($__currentLoopData as $value): $loop = $this->incrementLoopIndices();  ?>
+ <?php 
+ extract($value);
+ ?>
+
+ <li>
+ <a href="index.php?act=film_by_genre&id=<?php echo \htmlentities($id??'', ENT_QUOTES, 'UTF-8', false); ?>"><?php echo \htmlentities($name??'', ENT_QUOTES, 'UTF-8', false); ?></a>
+ </li>
+ <?php endforeach; $this->popLoop(); $loop = $this->getFirstLoop(); ?>
+ <?php endif; ?>?>
+ </ul>
+ </li>
+ <li>
+ <a href="index.php?act=contact">Liên hệ</a>
+ </li>
+ <li>
+ <a href="#0">Xem Thêm</a>
+ <ul class="submenu">
+ <li>
+ <?php
+ if (!isset($_SESSION['account'])) {
+ ?>
+ <a href="index.php?act=login">Quản lý vé đặt</a>
+ <?php
+ } else {
+ ?>
+ <a href="index.php?act=my_ticket">Quản lý vé đặt</a>
+ <?php
+ }
+ ?>
+ </li>
+ </ul>
+ </li>
+ </ul>
+ <?php endif; ?>
+ <?php if(!isset($_SESSION['account'])): ?>
+ <div class="login">
+ <li class="header-button pr-0">
+ <a href="index.php?act=login">Đăng nhập</a>
+ </li>
+ </div>
+ <?php else: ?>
+ <?php 
+ extract($_SESSION['account']);
+ ?>
+ <p>Xin chào, <b> <?php echo \htmlentities($name??'', ENT_QUOTES, 'UTF-8', false); ?> </b> <br> 
+ <a href='index.php?act=logout'>Đăng xuất</a>
+ </p>
+ <?php if($_SESSION['account']['role'] == 0): ?>
+ <a href='admin/index.php'>Đăng nhập Admin</a>
+ <?php elseif($_SESSION['account']['role'] == 1): ?>
+ <a href='admin/index.php'>Đăng nhập Nhân Viên</a>
+ <?php endif; ?>
+ <?php endif; ?>
+ </div>
+ </div>
+ </header>
