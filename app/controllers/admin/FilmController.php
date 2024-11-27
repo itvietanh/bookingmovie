@@ -2,6 +2,7 @@
     namespace App\controllers\admin;
     use App\controllers\BaseController;
     use App\models\admin\FilmModel;
+    use App\models\admin\ShowFilmModel;
 
     class FilmController extends BaseController {
         public function getFilm() {
@@ -128,6 +129,13 @@
                 $objFilm -> delete($id);
                 header("Location: " . route('home'));
             }
+        }
+
+        public function addShowFilm() {
+            $objShowFilm = new ShowFilmModel();
+            $objShowFilm -> addShowFilm();
+            echo "<script>alert('Thêm Lịch Chiếu Ngày Mới Thành Công');</script>";
+            header("Location: " .route("filmManager"));
         }
 
     }

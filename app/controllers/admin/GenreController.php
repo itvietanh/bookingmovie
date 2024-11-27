@@ -37,8 +37,8 @@
                 
             }
             include "app/views/admin/header.blade.php";
+            include "app/views/admin/aside.blade.php";
             return $this -> render('admin.genres.addGenre', ['error' => $error]);
-            include "app/views/admin/footer.blade.php";
         }
     }
 ?>

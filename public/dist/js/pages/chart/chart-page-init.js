@@ -1,11 +1,88 @@
+// $(function () {
+//     function updateData() {
+//         $.ajax({
+//             url: 'ProcessChart', // Thay đổi đường dẫn tương ứng với tên tệp PHP của bạn
+//             dataType: 'json',
+//             success: function (response) {
+//                 var data = [];
+//                 for (var key in response) {
+//                     if (response.hasOwnProperty(key) && !isNaN(key)) {
+//                         data.push([response[key][0], response[key][1]]);
+//                     }
+//                 }
+//                 console.log(data);
+//                 plot.setData([data]);
+//                 plot.draw();
+//                 setTimeout(updateData, 10000); // Cập nhật mỗi 10 giây
+//             },
+//             error: function (error) {
+//                 console.log("Lỗi khi lấy dữ liệu từ máy chủ:", error);
+//             }
+//         });
+//     }
+
+//     var plot = $.plot("#flot-line-chart", [], {
+//         series: {
+//             shadowSize: 1,
+//             lines: { fill: true, fillColor: 'transparent' },
+//         },
+//         yaxis: {
+//             min: 0,
+//             show: true
+//         },
+//         xaxis: {
+//             mode: "time",
+//             timeformat: "%Y-%m-%d" // Định dạng cho trục x là ngày
+//         },
+//         colors: ["#488c13"],
+//         grid: {
+//             color: "#AFAFAF",
+//             hoverable: true,
+//             borderWidth: 0,
+//             backgroundColor: 'transparent'
+//         },
+//         tooltip: true,
+//         tooltipOpts: {
+//             content: "Ngày: %x, Doanh thu: %y"
+//         }
+//     });
+
+//     updateData();
+// });
+
+
+
+
+
 $(function () {
     // we use an inline data source in the example, usually data would
     // be fetched from a server
     // ==============================================================
     // Real Time Visits
     // ==============================================================
-    var data = [5, 10, 15, 20, 15, 30, 40],
-        totalPoints = 100;
+    // var data = [5, 10, 15, 20, 15, 30, 40],
+    //     totalPoints = 100;
+
+    $.ajax({
+        url: 'ProcessChart', // Thay đổi đường dẫn tương ứng với tên tệp PHP của bạn
+        dataType: 'json',
+        success: function (response) {
+            var data = [];
+            for (var key in response) {
+                if (response.hasOwnProperty(key) && !isNaN(key)) {
+                    data.push([response[key][0], response[key][1]]);
+                }
+            }
+            getRandomData(data)
+            console.log(data);
+            plot.setData([data]);
+            plot.draw();
+            setTimeout(updateData, 10000); // Cập nhật mỗi 10 giây
+        },
+        error: function (error) {
+            console.log("Lỗi khi lấy dữ liệu từ máy chủ:", error);
+        }
+    });
 
     function getRandomData() {
         if (data.length > 0) data = data.slice(1);

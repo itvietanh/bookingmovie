@@ -13,6 +13,7 @@
     ],
     "require": {
         "phroute/phroute": "^2.2",
-        "eftec/bladeone": "^4.11"
+        "eftec/bladeone": "^4.11",
+        "phpoffice/phpspreadsheet": "^2.2"
     }
 }

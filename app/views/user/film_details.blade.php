@@ -2,6 +2,26 @@
 extract($filmDetails);
 @endphp
 
+@if (!empty($listOderSeat))
+@foreach ($listOderSeat as $key => $seats)
+$bookedSeats[] = $seats['seat_order'];
+@endforeach
+$check_seat = implode(",", $bookedSeats);
+@endif
+
+@php
+include "public/global.php"
+@endphp
+
+
+<?php
+if (isset($_SESSION['auth'])) {
+    unset($_SESSION['redirect_url']);
+}
+?>
+
+
+
 <section class="details-banner bg_img" data-background="{{BASE_URL}}public/assets/images/banner/banner03.jpg">
     <div class="container">
         <div class="details-banner-wrapper">
@@ -98,15 +118,25 @@ extract($filmDetails);
                     <p><a href="#0">Rate It</a></p>
                 </div>
             </div>
-            <a href="#"> <button type="button" class="custom-button" data-bs-toggle="modal" data-bs-target="#myModal">Đặt vé</button></a>
-            <!-- The Modal -->
-            <div class="modal fade w-100" id="myModal" >
-                <div class="modal-dialog modal-xl modal-dialog-centered" >
+
+            @if(isset($_SESSION['auth']) && $_SESSION['auth'])
+            <a href="#"> <button type="button" class="custom-button" data-bs-toggle="modal" data-bs-target="#myShowTime">Đặt vé</button></a>
+            @else
+            @php
+            $_SESSION['redirect_url'] = $_SERVER['REQUEST_URI'];
+            @endphp
+            <p class="text-danger"><a href="{{BASE_URL}}login">Đăng nhập</a> để đặt vé!</p>
+            @endif
+
+
+            <!-- lịch Chiếu : Hidden -->
+            <div class="modal fade w-100" id="myShowTime">
+                <div class="modal-dialog modal-xl modal-dialog-centered">
                     <div class="modal-content" style="background: #001232;">
 
                         <!-- Modal Header -->
-                        <div class="">
-                            <h4 class="modal-title " style="color: black;">FIlm Name</h4>
+                        <div class="mx-auto">
+                            <h5 class="modal-title text-text-white card-title my-3">LỊCH CHIẾU: {{$name_film}}</h5>
                             <!-- <button type="button" class="btn-close" data-bs-dismiss="modal"></button> -->
                         </div>
 
@@ -114,26 +144,15 @@ extract($filmDetails);
                         <div class="modal-body">
                             <section class="book-section bg-one">
                                 <div class="container">
-                                    <form class="ticket-search-form two" action="" method="post">
+                                    <form class="ticket-search-form" action="" method="post">
                                         <div class="form-group">
                                             <div class="thumb">
                                                 <img src="{{BASE_URL}}public/assets/images/ticket/date.png" alt="ticket">
                                             </div>
                                             <span class="type">Ngày Chiếu</span>
-                                            <select class="select-bar" name="choose_date" required="" style="display: none;">
-                                                <option value="">--- Lựa Chọn ---</option>
-                                                <option value="2023-11-09" selected="">2023-11-09</option>
-                                                <option value="2023-11-10">2023-11-10</option>
-                                                <option value="2023-12-11">2023-12-11</option>
+                                            <select class="select-bar" id="selectDate" name="selectDate" required="" style="display: none;">
+
                                             </select>
-                                            <!-- <div class="nice-select select-bar" tabindex="0"><span class="current">2023-11-09</span>
-                                                <ul class="list">
-                                                    <li data-value="" class="option">--- Lựa Chọn ---</li>
-                                                    <li data-value="2023-11-09" class="option selected focus">2023-11-09</li>
-                                                    <li data-value="2023-11-10" class="option">2023-11-10</li>
-                                                    <li data-value="2023-12-11" class="option">2023-12-11</li>
-                                                </ul>
-                                            </div> -->
                                         </div>
 
                                         <div class="form-group">
@@ -141,72 +160,161 @@ extract($filmDetails);
                                                 <img src="{{BASE_URL}}public/assets/images/ticket/date.png" alt="ticket">
                                             </div>
                                             <span class="type">Phòng Chiếu</span>
-                                            <select class="select-bar" name="choose_room" required="" style="display: none;">
-                                                <option value="">--- Lựa Chọn ---</option>
-                                                <option value="1" selected="">Phòng Chiếu 1</option>
-                                                <option value="2">Phòng Chiếu 2</option>
-                                                <option value="3">Phòng Chiếu 3
-                                                </option>
-                                                <option value="4">Phòng Chiếu 4
-                                                </option>
-                                                <option value="5">Phòng Chiếu 5
-                                                </option>
+
+                                            <select class="select-bar" name="selectRoom" id="selectRoom" onchange="checkRoom()" required="" style="display: none;">
+                                                <option value="0">Lựa Chọn</option>
+                                                @foreach ($room as $value)
+                                                @php
+                                                extract($value);
+                                                @endphp
+                                                <option value="{{$id}}">{{$name}}</option>
+                                                @endforeach
                                             </select>
-                                            <!-- <div class="nice-select select-bar" tabindex="0"><span class="current">Phòng Chiếu 1</span>
-                                                <ul class="list">
-                                                    <li data-value="" class="option">--- Lựa Chọn ---</li>
-                                                    <li data-value="1" class="option selected focus">Phòng Chiếu 1</li>
-                                                    <li data-value="2" class="option">Phòng Chiếu 2</li>
-                                                    <li data-value="3" class="option">Phòng Chiếu 3
-                                                    </li>
-                                                    <li data-value="4" class="option">Phòng Chiếu 4
-                                                    </li>
-                                                    <li data-value="5" class="option">Phòng Chiếu 5
-                                                    </li>
-                                                </ul>
-                                            </div> -->
                                         </div>
                                         <div class="form-group">
-                                            <input type="hidden" value="1" name="id_film">
-                                            <input type="hidden" value="1" name="id_cinema">
-                                            <input type="submit" class="btn btn-primary " name="btnSubmit" value="Xem Suất Chiếu" >
+                                            <input type="submit" class="btn btn-primary " name="btnSubmit" class="showTime" value="Xem Suất Chiếu">
                                         </div>
+                                        <div class="ticket-plan-section padding-bottom padding-top" style="width: 1200px;">
+                                            <div class="container">
+                                                <div class="row justify-content-center">
+                                                    <div class="col-lg-9 mb-5 mb-lg-0">
+                                                        <ul class="seat-plan-wrapper bg-five">
+                                                            <li>
+                                                                <div class="movie-name">
+                                                                    <div class="icons">
+                                                                        <i class="far fa-heart"></i>
+                                                                        <i class="fas fa-heart"></i>
+                                                                    </div>
+                                                                    <a href="#0" class="name" style="font-size: 14px;">Rạp: FPOLY Cinema</a>
+                                                                    <div class="location-icon">
+                                                                        <i class="fas fa-map-marker-alt"></i>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="movie-schedule">
+                                                                    <div class="" id="showTime">
+
+                                                                    </div>
+                                                                    <p id="roomSelectionMessage" style="display: none; color: red;">Hãy chọn phòng chiếu để hiển thị lịch chiếu.</p>
+                                                                </div>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                     </form>
                                 </div>
                             </section>
 
-                            <div class="ticket-plan-section padding-bottom padding-top">
-                                <div class="container">
-                                    <div class="row justify-content-center">
-                                        <div class="col-lg-9 mb-5 mb-lg-0">
-                                            <ul class="seat-plan-wrapper bg-five">
-                                                <li>
 
-                                                    <div class="movie-name">
-                                                        <div class="icons">
-                                                            <i class="far fa-heart"></i>
-                                                            <i class="fas fa-heart"></i>
-                                                        </div>
-                                                        <a href="#0" class="name" style="font-size: 14px;">Rạp: FPOLY Cinema</a>
-                                                        <div class="location-icon">
-                                                            <i class="fas fa-map-marker-alt"></i>
-                                                        </div>
-                                                    </div>
-                                                    <div class="movie-schedule">
-                                                        <div class="item">
-                                                            <a href="index.php?act=film_seat&amp;id=1&amp;date=2023-11-09&amp;id_film=26&amp;room=1&amp;cinema=1">14:00:00</a>
-                                                        </div>
-                                                        <div class="item">
-                                                            <a href="index.php?act=film_seat&amp;id=2&amp;date=2023-11-09&amp;id_film=26&amp;room=1&amp;cinema=1">16:00:00</a>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                            </ul>
+                        </div>
+
+                        <!-- Modal footer -->
+                        <div class="">
+                            <!-- <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button> -->
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chỗ ngồi: Hidden -->
+
+            <div class="modal fade w-100" id="mySeat">
+                <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content" style="background: #001232;">
+
+                        <!-- Modal Header -->
+                        <div class="mx-auto">
+                            <h5 class="modal-title text-text-white card-title my-3">{{$name_film}}</h5>
+                            <!-- <button type="button" class="btn-close" data-bs-dismiss="modal"></button> -->
+                        </div>
+
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                            <div class="seat-plan-section padding-bottom ">
+                                <div class="container">
+                                    <div class="screen-area">
+                                        <div class="screen-thumb">
+                                            <img src="{{BASE_URL}}public/assets/images/movie/screen-thumb.png" alt="movie">
+                                        </div>
+                                        <!-- <h5 class="subtitle">Màn Hình Chiếu</h5> -->
+                                        <div class="status_seat" style="display: flex;justify-content: center;">
+                                            <div class="status" style="display: flex;margin: 1em; align-items: center;">
+                                                <div style="border-radius: 5px;width: 20px;height: 20px;border: 1px solid gray;margin-right: 5px"></div>
+                                                <span style="color: white"> Ghế trống</span>
+                                            </div>
+                                            <div class="status" style="display: flex;margin: 1em; align-items: center;">
+                                                <div style="border-radius: 5px;width: 20px;height: 20px;border: 1px solid gray;margin-right: 5px;background-color: rgb(255, 255, 255);"></div>
+                                                <span style="color: white"> Ghế đang chọn</span>
+                                            </div>
+                                            <div class="status" style="display: flex;margin: 1em; align-items: center;">
+                                                <div style="border-radius: 5px;width: 20px;height: 20px;border: 1px solid gray;margin-right: 5px;background-color: #ff3131;"></div>
+                                                <span style="color: white"> Ghế đã được chọn</span>
+                                            </div>
+                                        </div>
+                                        <form action="" method="post">
+                                            <div class="screen-wrapper">
+                                                <ul class="seat-area">
+                                                    <li class="seat-line" style="flex-flow: column;">
+                                                        <ul class="seat--area seat-title">
+                                                            <li class="front-seat">
+                                                                <?php foreach ($seat as $key => $value) {
+                                                                ?>
+                                                                    <ul>
+                                                                        <span><?php echo $key ?></span>
+                                                                        <?php foreach ($value as $key2 => $value2) {
+                                                                        ?>
+
+                                                                            <li class="single-seat">
+                                                                                <!--                                                    <img src="assets/images/movie/seat01.png" alt="seat">-->
+                                                                                <span class="sit-num"><?php echo $key . $value2 ?></span>
+                                                                            </li>
+                                                                        <?php
+                                                                        } ?>
+                                                                    </ul>
+                                                                <?php
+                                                                } ?>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                    </div>
+                                    </form>
+                                    <div class="proceed-book bg_img" data-background="assets/images/movie/movie-bg-proceed.jpg" style="background-image: url(&quot;assets/images/movie/movie-bg-proceed.jpg&quot;);">
+                                        <div class="proceed-to-book">
+                                            <div class="book-item">
+                                                <span>You have Choosed Seat</span>
+                                                <h3 class="title" id="title-seat"></h3>
+                                            </div>
+
+                                            <div class="book-item">
+                                                <form id="submitCheckout" action="{{BASE_URL}}checkout" method="post">
+                                                    <span>total price</span>
+                                                    <input type="hidden" id="hidden_price" value="<?php echo $ticketPrice['price'] ?>">
+                                                    <input type="hidden" name="nameFilm" value="{{$name_film}}">
+                                                    <input type="hidden" name="idFilm" value="{{$id_film}}">
+                                                    <input type="hidden" id="select_seat" name="selected_seats">
+                                                    <input type="hidden" id="mul_price" name="price">
+                                                    <input type="hidden" id="hidden_quantity" name="hidden_quantity">
+                                                    <input type="hidden" id="orderRoom" name="orderRoom">
+                                                    <input type="hidden" id="orderDate" name="orderDate">
+                                                    <input type="hidden" id="nameRoom" name="nameRoom">
+                                                    <input type="hidden" id="nameCinema" name="nameCinema">
+                                                    <input type="hidden" id="startTime" name="startTime">
+                                                    <input type="hidden" id="endTime" name="endTime">
+                                                    <input type="hidden" id="idShowTime" name="idShowTime">
+
+                                                    <h3 class="title" id="price"></h3>
+                                                    <input type="submit" class="custom-button" name="btnSubmit" value="Đặt vé">
+                                                </form>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
                         </div>
 
                         <!-- Modal footer -->
@@ -321,13 +429,15 @@ extract($filmDetails);
                                 <p class="text-danger">Bạn phải đăng nhập để bình luận !!!</p>
                                 @else
                                 <form id="commentForm" action="{{BASE_URL}}comment/{{$id_film}}" method="post" style="margin: 0 0 40px 0;">
-                                    <input type="text" name="comment" placeholder="Viết bình luận..." style="height: 100px; margin: 0 0 30px 0" id="commentInput" required>
-                                    </input>
-                                    <div class="" style="width: 150px;">
-                                        <input class="custom-button" type="submit" name="submitComment" value="Gửi">
-                                        @if(isset($error['comment']))
-                                        <p class="text-dark">{{ $error['comment'] }}</p>
-                                        @endif
+                                    <div class="input-group">
+                                        <input type="text" name="comment" placeholder="Viết bình luận..." style="height: 100px; margin: 0 0 30px 0" id="commentInput" required>
+                                        </input>
+                                        <div class="" style="width: 150px;">
+                                            <input class="custom-button " type="submit" name="submitComment" value="Gửi">
+                                            @if(isset($error['comment']))
+                                            <p class="text-dark">{{ $error['comment'] }}</p>
+                                            @endif
+                                        </div>
                                     </div>
                                 </form>
                                 @endif
@@ -355,117 +465,3 @@ extract($filmDetails);
 @php
 include "app/views/footer.blade.php";
 @endphp
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function() {
-        // Intercept form submission
-        $('#commentForm').submit(function(event) {
-            // Prevent default form submission
-            event.preventDefault();
-
-            // Get the comment input value
-            var comment = $('#commentInput').val();
-
-            // Send AJAX request
-            $.ajax({
-                type: 'POST',
-                url: $(this).attr('action'),
-                dataType: 'json',
-                data: {
-                    comment: comment
-                },
-                success: function(response) {
-                    console.log(response);
-                    // Update UI with new comment
-                    var newCommentHtml = `
-                    <div class="movie-review-item">
-                        <div class="author">
-                            <div class="thumb">
-                                <a href="#0">
-                                    <img src="{{BASE_URL}}public/assets/images/cast/cast02.jpg" alt="cast">
-                                </a>
-                            </div>
-                            <div class="movie-review-info">
-                                <span class="reply-date">${response[0]['date_comment']}</span>
-                                <h6 class="subtitle"><a href="#0">${response[0]['name']}</a></h6>
-                                <span><i class="fas fa-check"></i> verified review</span>
-                            </div>
-                        </div>
-                        <div class="movie-review-content">
-                            <div class="review">
-                                <i class="flaticon-favorite-heart-button"></i>
-                                <i class="flaticon-favorite-heart-button"></i>
-                                <i class="flaticon-favorite-heart-button"></i>
-                                <i class="flaticon-favorite-heart-button"></i>
-                                <i class="flaticon-favorite-heart-button"></i>
-                            </div>
-                            <h6 class="cont-title">${response[0]['name_film']}</h6>
-                            <div id="comment" class="mb-3">
-                                <p>${response[0]['content']}</p>
-                            </div>
-                            <div class="review-meta">
-                                <a href="#0">
-                                    <i class="flaticon-hand"></i><span>8</span>
-                                </a>
-                                <a href="#0" class="dislike">
-                                    <i class="flaticon-dont-like-symbol"></i><span>0</span>
-                                </a>
-                                <a onclick="return confirm('Bạn có muốn xóa bình luận này không?')" href="index.php?act=delete_comment&id_comment=${response.id_comment}&id=${response.id_film}">
-                                    Xóa bình luận
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                    // Prepend the new comment to the comments section
-                    $('#commentTab').prepend(newCommentHtml);
-
-                    // Clear comment input field
-                    $('#commentInput').val('');
-
-                    // Optionally, you can show a success message or perform any other action
-                },
-                error: function(xhr, status, error) {
-                    // Handle error
-                    console.error(error);
-                    // Optionally, update UI or show error message
-                }
-            });
-        });
-    });
-
-
-
-
-
-    // $(document).ready(function() {
-    //     // Intercept form submission
-    //     $('#commentForm').submit(function(event) {
-    //         // Prevent default form submission
-    //         event.preventDefault();
-
-    //         // Get the comment input value
-    //         var comment = $('#commentInput').val();
-    //         // console.log(comment);
-
-    //         // Send AJAX request
-    //         $.ajax({
-    //             type: 'POST',
-    //             url: $(this).attr('action'),
-    //             dataType: 'json',
-    //             data: {
-    //                 comment: comment
-    //             },
-    //             success: function(response) {
-    //                 console.log(response);
-    //             },
-    //             error: function(xhr, status, error) {
-    //                 // Handle error
-    //                 console.error(error);
-    //                 // Optionally, update UI or show error message
-    //             }
-    //         })
-    //     });
-    // });
-</script>

@@ -12,4 +12,6 @@
         <a href="genreManager" class="btn btn-primary ">List Genre</a>
     </form>
 </div>
-
+@php
+include "app/views/admin/footer.blade.php";
+@endphp

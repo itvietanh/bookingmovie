@@ -1,3 +1,7 @@
+@php
+include "public/global.php"
+@endphp
+
 <!-- ==========Sign-In-Section========== -->
 <section class="account-section bg_img" data-background="<?php echo $path?>/images/account/account-bg.jpg">
     <div class="container">
@@ -26,14 +30,14 @@
                             <p class="text-danger mt-3">{{$error['authentication']}}</p>
                     @endif 
                     <div class="form-group checkgroup">
-                        <a href="index.php?act=forgot_password" class="forget-pass">Quên mật khẩu?</a>
+                        <a href="<?=BASE_URL?>forgot_password" class="forget-pass">Quên mật khẩu?</a>
                     </div>
                     <div class="form-group text-center">
                         <input type="submit" name="btnSubmit" value="Đăng nhập">
                     </div>
                 </form>
                 <div class="option">
-                    Bạn chưa có tài khoản? <a href="index.php?act=sign_up">đăng ký ngay</a>
+                    Bạn chưa có tài khoản? <a href="<?=BASE_URL?>signup">đăng ký ngay</a>
                 </div>
                 <div class="or"><span>Or</span></div>
                 <ul class="social-icons">
@@ -59,3 +63,7 @@
 </section>
 <!-- ==========Sign-In-Section========== -->
 <?php ob_end_flush();?>
+@php
+    include "app/views/footer.blade.php";
+
+    @endphp

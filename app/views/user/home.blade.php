@@ -22,9 +22,9 @@
             <div class="col-lg-3 col-sm-10  mt-50 mt-lg-0">
                 <div class="widget widget-search">
                     <!-- <h5 class="title">tìm kiếm</h5> -->
-                    <form class="search-form" action="index.php?act=movie" method="post">
+                    <form class="search-form" action="{{BASE_URL}}film" method="post">
                         <input type="text" name="kyw" placeholder="Tìm kiếm phim" required>
-                        <input type="submit" value="Tìm kiếm" name="btn-search" class="btn btn-primary rounded ">
+                        <input type="submit" value="Tìm kiếm" name="btnSubmit" class="btn btn-primary rounded ">
                     </form>
                 </div>
                 <div class="widget-1 widget-trending-search">
@@ -37,7 +37,7 @@
                                     extract($value); ?>
                                     <li>
                                         <h6 class="sub-title">
-                                            <a href="index.php?act=film_by_genre/{{$id}}">{{$name}}</a>
+                                            <a href="filmByGenre/{{$id}}">{{$name}}</a>
                                         </h6>
                                     </li>
                             <?php

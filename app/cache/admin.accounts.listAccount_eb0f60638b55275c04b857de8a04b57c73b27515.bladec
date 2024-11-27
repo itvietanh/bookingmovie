@@ -18,7 +18,7 @@
  <div class="mx-3 mt-5 ">
  <table class="table shadow p-3 mb-5 bg-body-tertiary rounded table-striped text-center ">
  <thead>
- <tr class="table-dark">
+ <tr class="">
  <th>ID</th>
  <th>Name</th>
  <th>Username</th>
